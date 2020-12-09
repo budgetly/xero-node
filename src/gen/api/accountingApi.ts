@@ -374,7 +374,13 @@ export class AccountingApi {
                     if (error) {
                         reject(error);
                     } else {
-                        body = JSON.parse(body)
+                        // Hotfix
+                        // @see https://github.com/XeroAPI/xero-node/issues/479
+                        try {
+                            body = JSON.parse(body)
+                        } catch (e) {
+                            return reject({ response: response, body: body });
+                        }
                         body = ObjectSerializer.deserialize(body, "Attachments");
                         if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
                             resolve({ response: response, body: body });
